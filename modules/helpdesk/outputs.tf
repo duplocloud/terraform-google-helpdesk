@@ -44,7 +44,7 @@ output "a_record_names" {
 }
 
 output "storage_class_name" {
-  description = "StorageClass of Helpdesk's shared volumes (the chart creates it in filestore and incluster modes)"
+  description = "StorageClass of Helpdesk's shared volumes: created by modules/storage in filestore and existing modes, by the chart's NFS server in incluster mode"
   value       = local.storage_class_name
 }
 

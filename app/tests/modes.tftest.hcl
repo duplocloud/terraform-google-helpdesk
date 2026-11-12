@@ -429,3 +429,13 @@ run "backend_impersonation_rejects_a_bare_domain" {
 
   expect_failures = [var.helpdesk]
 }
+
+run "existing_storage_requires_ip_and_share" {
+  command = plan
+
+  variables {
+    storage = { mode = "existing", values = {}, provides = { filestore_ip = "10.9.0.2" } }
+  }
+
+  expect_failures = [var.storage]
+}

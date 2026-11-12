@@ -43,14 +43,14 @@ variable "cluster" {
   type        = any
 
   # An adopted cluster must be on the Network layer's VPC: Filestore and the Gateway attach to that VPC. The wizard
-  # lists only those clusters and sends the cluster's VPC as provides.network_id; this checks it when present (inputs
-  # saved by an older release have none and plan as before).
+  # lists only those clusters and sends the cluster's VPC as provides.network_id, which is required so this can check.
   validation {
-    condition = (try(var.cluster.mode, "") != "existing" || try(var.cluster.provides.network_id, "") == "" || (
-      try(var.network.mode, "") != "create"
+    condition = (try(var.cluster.mode, "") != "existing" || (
+      try(coalesce(var.cluster.provides.network_id), "") != ""
+      && try(var.network.mode, "") != "create"
       && try(regex("projects/.+", var.cluster.provides.network_id), var.cluster.provides.network_id) == try(regex("projects/.+", var.network.provides.vpc_id), "")
     ))
-    error_message = "An adopted cluster must be on the network layer's VPC: use network.mode \"existing\" with network.provides.vpc_id equal to cluster.provides.network_id."
+    error_message = "An adopted cluster needs cluster.provides.network_id (its VPC), and it must be the network layer's VPC: network.mode \"existing\" with network.provides.vpc_id equal to it."
   }
 }
 

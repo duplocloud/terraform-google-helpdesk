@@ -266,16 +266,28 @@ run "existing_cluster_rejects_a_new_vpc" {
   expect_failures = [var.cluster]
 }
 
-run "existing_cluster_saved_without_network_id_still_plans" {
+run "existing_cluster_requires_its_network_id" {
   command = plan
 
   variables {
+    network = {
+      mode   = "existing"
+      values = {}
+      provides = {
+        vpc_id              = "projects/acme-prod/global/networks/corp"
+        subnet_id           = "projects/acme-prod/regions/us-central1/subnetworks/corp-usc1"
+        pods_range_name     = "gke-pods"
+        services_range_name = "gke-services"
+      }
+    }
     cluster = {
       mode     = "existing"
       values   = {}
       provides = { cluster_name = "corp-gke", cluster_endpoint = "198.51.100.7", cluster_ca_certificate = "Q0E=" }
     }
   }
+
+  expect_failures = [var.cluster]
 }
 
 run "existing_buckets" {

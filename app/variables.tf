@@ -28,6 +28,14 @@ variable "storage" {
     error_message = "storage.mode must be \"filestore\", \"existing\" or \"incluster\"."
   }
 
+  # An existing share is served by the NFS provisioner: without both values it would mount "" at "/" and fail at apply.
+  validation {
+    condition = try(var.storage.mode, "") != "existing" || (
+      try(coalesce(var.storage.provides.filestore_ip), "") != "" && try(coalesce(var.storage.provides.filestore_share), "") != ""
+    )
+    error_message = "storage.mode \"existing\" needs storage.provides.filestore_ip and filestore_share (the Filestore instance's IP address and share name)."
+  }
+
   validation {
     condition     = can(regex("^([1-9][0-9]*(Gi|Ti))?$", try(var.storage.values.filestore_size, "")))
     error_message = "storage.values.filestore_size must be a size in Gi or Ti, e.g. 100Gi or 1Ti."

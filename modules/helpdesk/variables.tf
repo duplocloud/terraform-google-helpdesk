@@ -46,7 +46,7 @@ variable "release_name" {
 }
 
 variable "namespace" {
-  description = "Kubernetes namespace for the Helpdesk release (created if missing); Workload Identity bindings follow it"
+  description = "Kubernetes namespace for the Helpdesk release. This module creates it, so it must not already exist on the cluster (on an adopted cluster, pick an unused name); Workload Identity bindings follow it"
   type        = string
   default     = "helpdesk"
   nullable    = false

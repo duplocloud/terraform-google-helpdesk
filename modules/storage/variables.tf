@@ -70,7 +70,7 @@ variable "nfs_provisioner_chart_version" {
 }
 
 variable "nfs_provisioner_namespace" {
-  description = "Namespace of the NFS provisioner (existing mode)"
+  description = "Namespace of the NFS provisioner (existing mode). This module creates it, so it must not already exist on the cluster"
   type        = string
   default     = "nfs-provisioner"
   nullable    = false
